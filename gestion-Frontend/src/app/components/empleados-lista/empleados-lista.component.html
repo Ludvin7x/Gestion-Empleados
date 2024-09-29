@@ -1,0 +1,32 @@
+<div class="container mt-5">
+    <h2>Lista de Empleados</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Departamento</th>
+          <th>Cargo</th>
+          <th>Fecha de Contratación</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let empleado of empleados">
+          <td>{{ empleado.id }}</td>
+          <td>{{ empleado.nombre }}</td>
+          <td>{{ empleado.apellido }}</td>
+          <td>{{ empleado.departamento }}</td>
+          <td>{{ empleado.cargo }}</td>
+          <td>{{ empleado.fechaContratacion }}</td>
+          <td>
+            <button class="btn btn-primary" [routerLink]="['/empleado/editar', empleado.id]">Editar</button>
+            <button class="btn btn-danger" (click)="eliminarEmpleado(empleado.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-success" [routerLink]="['/empleado/nuevo']">Agregar Empleado</button>
+  </div>
+  
