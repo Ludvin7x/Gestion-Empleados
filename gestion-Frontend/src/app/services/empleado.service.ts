@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';  // Asegúrate de que esto esté presente
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class EmpleadoService {
   private apiUrl = 'http://localhost:5000/api';  // URL del backend
 
