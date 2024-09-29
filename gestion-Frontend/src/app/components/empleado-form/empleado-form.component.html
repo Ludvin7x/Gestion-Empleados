@@ -1,1 +1,84 @@
-<p>empleado-form works!</p>
+<div class="container mt-5">
+    <h2 *ngIf="!editMode">Agregar Empleado</h2>
+    <h2 *ngIf="editMode">Editar Empleado</h2>
+  
+    <form (ngSubmit)="onSubmit()" #empleadoForm="ngForm">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          required
+          [(ngModel)]="empleado.nombre"
+          name="nombre"
+          #nombre="ngModel"
+        />
+        <div *ngIf="nombre.invalid && nombre.touched" class="text-danger">
+          El nombre es requerido
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input
+          type="text"
+          class="form-control"
+          id="apellido"
+          required
+          [(ngModel)]="empleado.apellido"
+          name="apellido"
+          #apellido="ngModel"
+        />
+        <div *ngIf="apellido.invalid && apellido.touched" class="text-danger">
+          El apellido es requerido
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="departamento">Departamento</label>
+        <select
+          class="form-control"
+          id="departamento"
+          required
+          [(ngModel)]="empleado.departamento"
+          name="departamento"
+          #departamento="ngModel"
+        >
+          <option *ngFor="let dept of departamentos" [value]="dept.codigo">{{ dept.nombre }}</option>
+        </select>
+      </div>
+  
+      <div class="form-group">
+        <label for="cargo">Cargo</label>
+        <input
+          type="text"
+          class="form-control"
+          id="cargo"
+          required
+          [(ngModel)]="empleado.cargo"
+          name="cargo"
+          #cargo="ngModel"
+        />
+        <div *ngIf="cargo.invalid && cargo.touched" class="text-danger">
+          El cargo es requerido
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="fechaContratacion">Fecha de Contratación</label>
+        <input
+          type="date"
+          class="form-control"
+          id="fechaContratacion"
+          required
+          [(ngModel)]="empleado.fechaContratacion"
+          name="fechaContratacion"
+          #fechaContratacion="ngModel"
+        />
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="empleadoForm.invalid">
+        {{ editMode ? 'Actualizar' : 'Agregar' }}
+      </button>
+  </form>

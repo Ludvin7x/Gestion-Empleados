@@ -15,6 +15,11 @@ export class EmpleadoService {
     return this.http.get(`${this.apiUrl}/empleados`);
   }
 
+  //Obtener listado de departamentos 
+  getDepartamentos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/departamentos`);
+  }
+
   // Obtener un solo empleado por su ID
   getEmpleado(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/empleados/${id}`);
