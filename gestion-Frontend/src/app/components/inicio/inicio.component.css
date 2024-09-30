@@ -1,0 +1,24 @@
+.hero {
+  background-color: #3f51b5; /* Color de fondo */
+  color: white; /* Color del texto */
+  text-align: center; /* Centrar el texto */
+  padding: 100px 20px; /* Espaciado interno */
+}
+
+.btn {
+  cursor: pointer;      /* Cambia el cursor cuando pasas sobre el botón */
+  pointer-events: all;  /* Asegúrate de que el botón pueda recibir clics */
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  margin: 10px;
+}
+
+.btn:hover {
+  background-color: #0056b3;  /* Cambia el color al pasar sobre el botón */
+}
