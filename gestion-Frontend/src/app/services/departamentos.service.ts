@@ -3,15 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Departamento {
-  codigo: number;
+  id: number; 
   nombre: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DepartamentosService {
-  private apiUrl = 'http://localhost:5000/api/departamentos';
+  private apiUrl = 'http://127.0.0.1:5000/api/departamentos';
 
   constructor(private http: HttpClient) {}
 

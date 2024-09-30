@@ -15,12 +15,14 @@
       <td>{{ empleado.id }}</td>
       <td>{{ empleado.nombre }}</td>
       <td>{{ empleado.apellido }}</td>
-      <td>{{ empleado.departamento }}</td>
-      <td>{{ empleado.cargo }}</td>
-      <td>{{ empleado.fechaContratacion }}</td>
+      <td>{{ obtenerNombreDepartamento(empleado.departamento_id) }}</td>
+      <td>{{ empleado.nombre_cargo }}</td>
+      <td>{{ empleado.fecha_contratacion | date: 'shortDate' }}</td>
       <td>
-        <a [routerLink]="['/empleados/editar', empleado.id]">Editar</a>
-        <button (click)="eliminarEmpleado(empleado.id)">Eliminar</button>
+        <div class="button-group">
+          <button class="btn-edit" [routerLink]="['/empleados/editar', empleado.id]">Editar</button>
+          <button (click)="eliminarEmpleado(empleado.id)" class="btn-delete">Eliminar</button>
+        </div>
       </td>
     </tr>
   </tbody>

@@ -6,9 +6,9 @@ export interface Empleado {
   id: number;
   nombre: string;
   apellido: string;
-  departamento: string;
-  cargo: string;
-  fechaContratacion: string;
+  departamento_id: number; // Asegúrate de usar departamento_id en lugar de departamento
+  fecha_contratacion: string;
+  nombre_cargo: string;
 }
 
 @Injectable({
@@ -35,7 +35,7 @@ export class EmpleadosService {
     return this.http.put<Empleado>(`${this.apiUrl}/${id}`, empleado);
   }
 
-  deleteEmpleado(id: number): Observable<void> { // Asegúrate de que este método esté definido
+  deleteEmpleado(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
