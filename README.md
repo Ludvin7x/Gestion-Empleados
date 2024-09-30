@@ -65,21 +65,22 @@ npm install
 ng serve
 
 
-## API
-La API se encuentra en http://localhost:5000/api/empleados y http://localhost:5000/api/departamentos. 
+# Documentación de la API
 
-Los endpoints principales son:
+## Endpoints Principales
 
-Empleados
-GET /api/empleados: Obtener todos los empleados.
-POST /api/empleados: Crear un nuevo empleado.
-GET /api/empleados/<id>: Obtener un empleado por ID.
-PUT /api/empleados/<id>: Actualizar un empleado por ID.
-DELETE /api/empleados/<id>: Eliminar un empleado por ID.
+### Empleados
 
-Departamentos
-GET /api/departamentos: Obtener todos los departamentos.
-POST /api/departamentos: Crear un nuevo departamento.
-GET /api/departamentos/<id>: Obtener un departamento por ID.
-PUT /api/departamentos/<id>: Actualizar un departamento por ID.
-DELETE /api/departamentos/<id>: Eliminar un departamento por ID.
+- **GET** `/api/empleados`: Obtener todos los empleados.
+- **POST** `/api/empleados`: Crear un nuevo empleado.
+- **GET** `/api/empleados/<id>`: Obtener un empleado por ID.
+- **PUT** `/api/empleados/<id>`: Actualizar un empleado por ID.
+- **DELETE** `/api/empleados/<id>`: Eliminar un empleado por ID.
+
+### Departamentos
+
+- **GET** `/api/departamentos`: Obtener todos los departamentos.
+- **POST** `/api/departamentos`: Crear un nuevo departamento.
+- **GET** `/api/departamentos/<id>`: Obtener un departamento por ID.
+- **PUT** `/api/departamentos/<id>`: Actualizar un departamento por ID.
+- **DELETE** `/api/departamentos/<id>`: Eliminar un departamento por ID.
