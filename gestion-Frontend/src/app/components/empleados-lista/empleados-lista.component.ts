@@ -1,38 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { EmpleadoService } from '../../services/empleado.service';
-import { RouterModule } from '@angular/router';  // Solo RouterModule si lo necesitas
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { EmpleadosService, Empleado } from '../../services/empleados.service';
 
 @Component({
   selector: 'app-empleados-lista',
   standalone: true,
-  imports: [RouterModule],  // Asegúrate de que no incluyas HttpClientModule
+  imports: [CommonModule, RouterModule],
   templateUrl: './empleados-lista.component.html',
-  styleUrls: ['./empleados-lista.component.css']
+  styleUrls: ['./empleados-lista.component.scss']
 })
 export class EmpleadosListaComponent implements OnInit {
-  empleados: any[] = [];
+  empleados: Empleado[] = [];
 
-  constructor(private empleadoService: EmpleadoService) {}
+  constructor(private empleadosService: EmpleadosService) {}
 
   ngOnInit(): void {
-    this.obtenerEmpleados();
+    this.cargarEmpleados();
   }
 
-  obtenerEmpleados(): void {
-    this.empleadoService.getEmpleados().subscribe(
-      (data) => {
-        this.empleados = data;  
-      },
-      (error) => {
-        console.error('Error al obtener empleados', error);
-      }
-    );
+  cargarEmpleados(): void {
+    this.empleadosService.getEmpleados().subscribe((data) => {
+      this.empleados = data;
+    });
   }
 
   eliminarEmpleado(id: number): void {
-    this.empleadoService.deleteEmpleado(id).subscribe(
-      () => this.obtenerEmpleados(),
-      (error) => console.error('Error al eliminar empleado', error)
-    );
+    this.empleadosService.deleteEmpleado(id).subscribe(() => {
+      this.cargarEmpleados(); // Recargar la lista después de eliminar
+    });
   }
 }
+

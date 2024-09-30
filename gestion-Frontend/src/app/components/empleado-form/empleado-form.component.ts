@@ -1,44 +1,66 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmpleadosService, Empleado } from '../../services/empleados.service';
+import { DepartamentosService, Departamento } from '../../services/departamentos.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-empleado-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './empleado-form.component.html',
-  styleUrls: ['./empleado-form.component.css']
+  styleUrls: ['./empleado-form.component.scss']
 })
 export class EmpleadoFormComponent implements OnInit {
   empleadoForm: FormGroup;
-  departamentos: any[] = []; // Inicializar el arreglo de departamentos
+  departamentos: Departamento[] = [];
+  empleadoId: number | null = null;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private empleadosService: EmpleadosService,
+    private departamentosService: DepartamentosService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.empleadoForm = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      departamento_id: ['', Validators.required],
-      fecha_contratacion: ['', Validators.required],
-      nombre_cargo: ['', Validators.required]
+      departamento: ['', Validators.required],
+      cargo: ['', Validators.required],
+      fechaContratacion: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.cargarDepartamentos(); // Cargar departamentos al inicializar
-  }
+    this.departamentosService.getDepartamentos().subscribe((data) => {
+      this.departamentos = data;
+    });
 
-  cargarDepartamentos(): void {
-    this.http.get<any[]>('URL_DE_TU_API/departamentos') // Asegúrate de usar la URL correcta
-      .subscribe(data => {
-        this.departamentos = data; // Asigna los datos a la variable
-      });
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.empleadoId = +id;
+        this.empleadosService.getEmpleado(this.empleadoId).subscribe((empleado) => { // Usar el método correcto
+          this.empleadoForm.patchValue(empleado);
+        });
+      }
+    });
   }
 
   onSubmit(): void {
     if (this.empleadoForm.valid) {
-      this.http.post('URL_DE_TU_API/empleados', this.empleadoForm.value) // Cambia a la URL de tu API
-        .subscribe(response => {
-          console.log('Empleado agregado:', response);
-          // Aquí puedes agregar más lógica, como redireccionar o limpiar el formulario
+      const empleado: Empleado = this.empleadoForm.value;
+      if (this.empleadoId) {
+        this.empleadosService.updateEmpleado(this.empleadoId, empleado).subscribe(() => {
+          this.router.navigate(['/empleados']);
         });
+      } else {
+        this.empleadosService.addEmpleado(empleado).subscribe(() => {
+          this.router.navigate(['/empleados']);
+        });
+      }
     }
   }
 }

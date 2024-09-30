@@ -1,14 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
-import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
+import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(),
     provideRouter(routes),
-    ReactiveFormsModule // Asegúrate de incluir ReactiveFormsModule aquí
+    provideHttpClient()
   ]
 }).catch(err => console.error(err));

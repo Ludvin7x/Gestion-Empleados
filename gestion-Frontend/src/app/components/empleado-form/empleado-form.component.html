@@ -1,26 +1,20 @@
 <form [formGroup]="empleadoForm" (ngSubmit)="onSubmit()">
-  <div>
     <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" formControlName="nombre" required>
-  </div>
-  <div>
+    <input id="nombre" formControlName="nombre" type="text">
+  
     <label for="apellido">Apellido:</label>
-    <input type="text" id="apellido" formControlName="apellido" required>
-  </div>
-  <div>
-    <label for="departamento_id">Departamento:</label>
-    <select id="departamento_id" formControlName="departamento_id" required>
-      <option value="" disabled selected>Seleccione un departamento</option>
-      <option *ngFor="let dep of departamentos" [value]="dep.id">{{ dep.nombre }}</option>
+    <input id="apellido" formControlName="apellido" type="text">
+  
+    <label for="departamento">Departamento:</label>
+    <select id="departamento" formControlName="departamento">
+      <option *ngFor="let dept of departamentos" [value]="dept.codigo">{{ dept.nombre }}</option>
     </select>
-  </div>
-  <div>
-    <label for="fecha_contratacion">Fecha de Contratación:</label>
-    <input type="date" id="fecha_contratacion" formControlName="fecha_contratacion" required>
-  </div>
-  <div>
-    <label for="nombre_cargo">Nombre del Cargo:</label>
-    <input type="text" id="nombre_cargo" formControlName="nombre_cargo" required>
-  </div>
-  <button type="submit">Agregar Empleado</button>
-</form>
+  
+    <label for="cargo">Cargo:</label>
+    <input id="cargo" formControlName="cargo" type="text">
+  
+    <label for="fechaContratacion">Fecha de Contratación:</label>
+    <input id="fechaContratacion" formControlName="fechaContratacion" type="date">
+  
+    <button type="submit">Guardar</button>
+  </form>
