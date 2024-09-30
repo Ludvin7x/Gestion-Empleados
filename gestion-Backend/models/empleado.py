@@ -1,16 +1,15 @@
-# models/empleado.py
-from flask_restx import Namespace, Resource, fields
-from data.empleados_data import empleados
+from flask import request
+from flask_restx import Resource, fields
+from app import empleado_ns, get_db
 
-empleado_ns = Namespace('empleados', description='Operaciones relacionadas con empleados')
-
+# Definir el modelo de datos para empleados
 empleado_model = empleado_ns.model('Empleado', {
-    'codigo': fields.Integer(required=True, description='Código del empleado'),
-    'nombre': fields.String(required=True, description='Nombre del empleado'),
-    'apellido': fields.String(required=True, description='Apellido del empleado'),
-    'departamento_codigo': fields.Integer(required=True, description='Código del departamento'),
-    'fecha_contratacion': fields.String(required=True, description='Fecha de contratación'),
-    'cargo': fields.String(required=True, description='Nombre del cargo'),
+    'id': fields.Integer(readOnly=True),
+    'nombre': fields.String(required=True),
+    'apellido': fields.String(required=True),
+    'departamento_id': fields.Integer(required=True),
+    'fecha_contratacion': fields.String(required=True),
+    'nombre_cargo': fields.String(required=True)
 })
 
 @empleado_ns.route('/')
@@ -18,37 +17,51 @@ class EmpleadoList(Resource):
     @empleado_ns.marshal_list_with(empleado_model)
     def get(self):
         """Obtener el listado de empleados"""
-        return empleados, 200
+        conn = get_db()
+        cursor = conn.execute('SELECT * FROM empleados')
+        empleados = cursor.fetchall()
+        return [dict(empleado) for empleado in empleados]
 
     @empleado_ns.expect(empleado_model)
     def post(self):
         """Agregar un nuevo empleado"""
-        empleado = empleado_ns.payload
-        empleados.append(empleado)
-        return empleado, 201
+        data = request.json
+        conn = get_db()
+        conn.execute('''INSERT INTO empleados (nombre, apellido, departamento_id, fecha_contratacion, nombre_cargo)
+                        VALUES (?, ?, ?, ?, ?)''', 
+                     (data['nombre'], data['apellido'], data['departamento_id'], 
+                      data['fecha_contratacion'], data['nombre_cargo']))
+        conn.commit()
+        return {'message': 'Empleado agregado correctamente'}, 201
 
-@empleado_ns.route('/<int:código>')
-class Empleado(Resource):
+@empleado_ns.route('/<int:id>')
+class EmpleadoResource(Resource):
     @empleado_ns.marshal_with(empleado_model)
-    def get(self, código):
-        """Obtener un empleado existente"""
-        empleado = next((e for e in empleados if e['codigo'] == código), None)
-        if empleado is not None:
-            return empleado, 200
-        return {'message': 'Empleado no encontrado'}, 404
+    def get(self, id):
+        """Obtener un empleado por ID"""
+        conn = get_db()
+        cursor = conn.execute('SELECT * FROM empleados WHERE id = ?', (id,))
+        empleado = cursor.fetchone()
+        if empleado is None:
+            empleado_ns.abort(404, "Empleado no encontrado")
+        return dict(empleado)
 
     @empleado_ns.expect(empleado_model)
-    def put(self, código):
+    def put(self, id):
         """Editar un empleado existente"""
-        empleado_actualizado = empleado_ns.payload
-        for empleado in empleados:
-            if empleado['codigo'] == código:
-                empleado.update(empleado_actualizado)
-                return empleado, 200
-        return {'message': 'Empleado no encontrado'}, 404
+        data = request.json
+        conn = get_db()
+        conn.execute('''UPDATE empleados
+                        SET nombre = ?, apellido = ?, departamento_id = ?, fecha_contratacion = ?, nombre_cargo = ?
+                        WHERE id = ?''',
+                     (data['nombre'], data['apellido'], data['departamento_id'], 
+                      data['fecha_contratacion'], data['nombre_cargo'], id))
+        conn.commit()
+        return {'message': 'Empleado actualizado correctamente'}
 
-    def delete(self, código):
-        """Eliminar un empleado"""
-        global empleados
-        empleados = [e for e in empleados if e['codigo'] != código]
-        return {'message': 'Empleado eliminado'}, 204
+    def delete(self, id):
+        """Eliminar un empleado por ID"""
+        conn = get_db()
+        conn.execute('DELETE FROM empleados WHERE id = ?', (id,))
+        conn.commit()
+        return {'message': 'Empleado eliminado correctamente'}, 204

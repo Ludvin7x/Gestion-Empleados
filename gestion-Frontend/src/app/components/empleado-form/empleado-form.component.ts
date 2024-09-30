@@ -1,73 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { EmpleadoService } from '../../services/empleado.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-empleado-form',
-  standalone: true,  // Componente independiente
-  imports: [FormsModule],  // Elimina HttpClientModule, ya no lo necesitas aquí
   templateUrl: './empleado-form.component.html',
   styleUrls: ['./empleado-form.component.css']
 })
 export class EmpleadoFormComponent implements OnInit {
-  empleado: any = {
-    nombre: '',
-    apellido: '',
-    departamento: '',
-    cargo: '',
-    fechaContratacion: ''
-  };
-  editMode: boolean = false;
-  empleadoId: number | null = null;
+  empleadoForm: FormGroup;
+  departamentos: any[] = []; // Inicializar el arreglo de departamentos
 
-  constructor(
-    private empleadoService: EmpleadoService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.editMode = true;
-        this.empleadoId = +id;
-        this.cargarEmpleado(this.empleadoId);
-      }
+  constructor(private fb: FormBuilder, private http: HttpClient) {
+    this.empleadoForm = this.fb.group({
+      nombre: ['', Validators.required],
+      apellido: ['', Validators.required],
+      departamento_id: ['', Validators.required],
+      fecha_contratacion: ['', Validators.required],
+      nombre_cargo: ['', Validators.required]
     });
   }
 
-  cargarEmpleado(id: number): void {
-    this.empleadoService.getEmpleado(id).subscribe(
-      (data) => {
-        this.empleado = data;
-      },
-      (error) => {
-        console.error('Error al cargar empleado', error);
-      }
-    );
+  ngOnInit(): void {
+    this.cargarDepartamentos(); // Cargar departamentos al inicializar
+  }
+
+  cargarDepartamentos(): void {
+    this.http.get<any[]>('URL_DE_TU_API/departamentos') // Asegúrate de usar la URL correcta
+      .subscribe(data => {
+        this.departamentos = data; // Asigna los datos a la variable
+      });
   }
 
   onSubmit(): void {
-    if (this.editMode && this.empleadoId) {
-      this.empleadoService.updateEmpleado(this.empleadoId, this.empleado).subscribe(
-        () => {
-          this.router.navigate(['/empleados']);
-        },
-        (error) => {
-          console.error('Error al actualizar empleado', error);
-        }
-      );
-    } else {
-      this.empleadoService.addEmpleado(this.empleado).subscribe(
-        () => {
-          this.router.navigate(['/empleados']);
-        },
-        (error) => {
-          console.error('Error al agregar empleado', error);
-        }
-      );
+    if (this.empleadoForm.valid) {
+      this.http.post('URL_DE_TU_API/empleados', this.empleadoForm.value) // Cambia a la URL de tu API
+        .subscribe(response => {
+          console.log('Empleado agregado:', response);
+          // Aquí puedes agregar más lógica, como redireccionar o limpiar el formulario
+        });
     }
   }
 }

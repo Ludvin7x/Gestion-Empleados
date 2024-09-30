@@ -11,12 +11,13 @@ def insertar_departamentos():
     # Inserta algunos departamentos
     departamentos = [
         (1, 'Recursos Humanos'),
-        (2, 'Informática'),
+        (2, 'Informatica'),
         (3, 'Ventas'),
-        (4, 'Marketing'),
-        (5, 'Bodega')
+        (4, 'Marketing'),  # Asegúrate de que esta línea tiene una coma al final
+        (5, 'Bodega')      # Y aquí también
     ]
     
+    # Ejecutar la inserción en la base de datos
     cursor.executemany("INSERT INTO departamentos (id, nombre) VALUES (?, ?)", departamentos)
     
     conn.commit()
@@ -27,14 +28,15 @@ def insertar_empleados():
     conn = conectar()
     cursor = conn.cursor()
     
-    # Inserta algunos empleados, asegurándote de incluir la fecha de contratación
+    # Inserta algunos empleados
     empleados = [
-        (1, 'Juan', 'Pérez', 1, '2023-01-01', 'Gerente'),  # id, nombre, apellido, departamento_id, fecha_contratacion, nombre_cargo
+        (1, 'Juan', 'Pérez', 1, '2023-01-01', 'Gerente'),  
         (2, 'María', 'Gómez', 2, '2023-01-02', 'Desarrollador'),
         (3, 'Carlos', 'Lopez', 3, '2023-01-03', 'Vendedor'),
         (4, 'Ana', 'Fernández', 4, '2023-01-04', 'Marketing Specialist')
     ]
     
+    # Ejecutar la inserción en la base de datos
     cursor.executemany("INSERT INTO empleados (id, nombre, apellido, departamento_id, fecha_contratacion, nombre_cargo) VALUES (?, ?, ?, ?, ?, ?)", empleados)
     
     conn.commit()

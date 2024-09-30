@@ -1,12 +1,11 @@
-# models/departamento.py
-from flask_restx import Namespace, Resource, fields
-from data.departamentos_data import departamentos
+from flask import request
+from flask_restx import Resource, fields
+from app import departamento_ns, get_db
 
-departamento_ns = Namespace('departamentos', description='Operaciones relacionadas con departamentos')
-
+# Definir el modelo de datos para departamentos
 departamento_model = departamento_ns.model('Departamento', {
-    'codigo': fields.Integer(required=True, description='Código del departamento'),
-    'nombre': fields.String(required=True, description='Nombre del departamento'),
+    'id': fields.Integer(readOnly=True),
+    'nombre': fields.String(required=True)
 })
 
 @departamento_ns.route('/')
@@ -14,11 +13,16 @@ class DepartamentoList(Resource):
     @departamento_ns.marshal_list_with(departamento_model)
     def get(self):
         """Obtener el listado de departamentos"""
-        return departamentos, 200
+        conn = get_db()
+        cursor = conn.execute('SELECT * FROM departamentos')
+        departamentos = cursor.fetchall()
+        return [dict(departamento) for departamento in departamentos]
 
     @departamento_ns.expect(departamento_model)
     def post(self):
         """Agregar un nuevo departamento"""
-        departamento = departamento_ns.payload
-        departamentos.append(departamento)
-        return departamento, 201
+        data = request.json
+        conn = get_db()
+        conn.execute('INSERT INTO departamentos (nombre) VALUES (?)', (data['nombre'],))
+        conn.commit()
+        return {'message': 'Departamento agregado correctamente'}, 201

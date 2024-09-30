@@ -3,17 +3,21 @@
 # =========================================
 
 # Compiled output
-gestion-Frontend/dist
-gestion-Frontend/tmp
-gestion-Frontend/out-tsc
-gestion-Frontend/bazel-out
+gestion-Frontend/dist/
+gestion-Frontend/tmp/
+gestion-Frontend/out-tsc/
+gestion-Frontend/bazel-out/
 
 # Node modules
-gestion-Frontend/node_modules
+gestion-Frontend/node_modules/
 gestion-Frontend/npm-debug.log
 gestion-Frontend/yarn-error.log
 
-# IDEs and editors (general)
+# Angular specific cache and coverage
+gestion-Frontend/.angular/cache/
+gestion-Frontend/.angular/cache/*
+
+# IDEs and editors
 gestion-Frontend/.idea/
 gestion-Frontend/.project
 gestion-Frontend/.classpath
@@ -30,15 +34,6 @@ gestion-Frontend/.vscode/*
 !gestion-Frontend/.vscode/extensions.json
 gestion-Frontend/.history/*
 
-# Angular specific cache and coverage
-gestion-Frontend/.angular/cache
-gestion-Frontend/.sass-cache/
-gestion-Frontend/connect.lock
-gestion-Frontend/coverage
-gestion-Frontend/libpeerconnection.log
-gestion-Frontend/testem.log
-gestion-Frontend/typings
-
 # System files
 gestion-Frontend/.DS_Store
 gestion-Frontend/Thumbs.db
@@ -47,19 +42,14 @@ gestion-Frontend/Thumbs.db
 # Reglas para gestion-Backend (Flask)
 # =========================================
 
-# Entorno virtual de Python
+# Ignorar el entorno virtual de Python
 gestion-Backend/venv/
-gestion-Backend/env/
 
 # Archivos de caché de Python
 gestion-Backend/__pycache__/
 gestion-Backend/*.pyc
 gestion-Backend/*.pyo
 gestion-Backend/*.pyd
-
-# Configuración de IDEs
-gestion-Backend/.idea/
-gestion-Backend/.vscode/
 
 # Archivos de log
 gestion-Backend/*.log
