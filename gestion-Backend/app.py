@@ -4,7 +4,7 @@ from flask_restx import Api, Resource, Namespace
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"], "allow_headers": ["Content-Type"]}})
 api = Api(app, version='1.0', title='API Gestión Empleados', description='Una API para gestionar empleados y departamentos')
 
 # Definir los namespaces

@@ -8,7 +8,7 @@ import { EmpleadosService, Empleado } from '../../services/empleados.service';
 @Component({
   selector: 'app-empleado-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule], // Importa ReactiveFormsModule aquí
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './empleado-form.component.html',
   styleUrls: ['./empleado-form.component.css']
 })
@@ -24,28 +24,36 @@ export class EmpleadoFormComponent implements OnInit {
     this.empleadoForm = this.fb.group({
       nombre: [''],
       apellido: [''],
-      departamento: [''],
+      departamento_id: [''], 
       cargo: [''],
       fechaContratacion: ['']
     });
   }
 
   ngOnInit(): void {
-    this.cargarDepartamentos(); // Cargar los departamentos al iniciar
+    this.cargarDepartamentos();
   }
 
   cargarDepartamentos(): void {
     this.departamentosService.getDepartamentos().subscribe((data) => {
-      this.departamentos = data; // Almacena la lista de departamentos
+      this.departamentos = data;
     });
   }
 
   onSubmit(): void {
     if (this.empleadoForm.valid) {
-      // Lógica para guardar el empleado
-      this.empleadosService.addEmpleado(this.empleadoForm.value).subscribe(() => {
-        // Manejo post-submission
-      });
+      this.empleadosService.addEmpleado(this.empleadoForm.value).subscribe(
+        (response) => {
+          console.log('Empleado agregado:', response);
+          // Manejo post-submission (redirigir a la lista o mostrar un mensaje de éxito)
+        },
+        (error) => {
+          console.error('Error al agregar empleado:', error);
+          // Manejar errores (por ejemplo, mostrar un mensaje de error)
+        }
+      );
+    } else {
+      console.log('Formulario no válido');
     }
-  }
+}
 }
