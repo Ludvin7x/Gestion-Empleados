@@ -4,7 +4,10 @@ from flask_restx import Api, Resource, Namespace
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"], "allow_headers": ["Content-Type"]}})
+
+# Configurar CORS solo para el origen 'http://localhost:4200'
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}})
+
 api = Api(app, version='1.0', title='API Gestión Empleados', description='Una API para gestionar empleados y departamentos')
 
 # Definir los namespaces
@@ -36,23 +39,32 @@ def init_db():
             departamento_id INTEGER NOT NULL,
             fecha_contratacion TEXT NOT NULL,
             nombre_cargo TEXT NOT NULL
-        )
-        ''')
+        )''')
 
         conn.execute('''
         CREATE TABLE IF NOT EXISTS departamentos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL
-        )
-        ''')
+        )''')
         conn.commit()
 
 # Inicializar la base de datos
 init_db()
 
+# Validación de campos
+def validate_empleado(data):
+    required_fields = ['nombre', 'apellido', 'departamento_id', 'fecha_contratacion', 'nombre_cargo']
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return False, f"El campo '{field}' es requerido."
+    return True, ""
+
 # Endpoints para empleados
-@empleado_ns.route('/')
+@empleado_ns.route('/', methods=['GET', 'POST', 'OPTIONS'])
 class EmpleadoList(Resource):
+    def options(self):
+        return {}, 200  # Responder a la solicitud preflight `OPTIONS`
+
     def get(self):
         """Obtener todos los empleados"""
         conn = get_db()
@@ -65,6 +77,10 @@ class EmpleadoList(Resource):
     def post(self):
         """Crear un nuevo empleado"""
         nuevo_empleado = request.json
+        is_valid, message = validate_empleado(nuevo_empleado)
+        if not is_valid:
+            return {'message': message}, 400  # Bad Request
+
         conn = get_db()
         if conn is None:
             return {'message': 'Database connection failed'}, 500
@@ -76,8 +92,11 @@ class EmpleadoList(Resource):
             nuevo_empleado['id'] = cursor.lastrowid
             return nuevo_empleado, 201
 
-@empleado_ns.route('/<int:id>')
+@empleado_ns.route('/<int:id>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
 class Empleado(Resource):
+    def options(self):
+        return {}, 200  # Responder a la solicitud preflight `OPTIONS`
+
     def get(self, id):
         """Obtener un empleado por ID"""
         conn = get_db()
@@ -92,6 +111,10 @@ class Empleado(Resource):
     def put(self, id):
         """Actualizar un empleado existente"""
         actualizado_empleado = request.json
+        is_valid, message = validate_empleado(actualizado_empleado)
+        if not is_valid:
+            return {'message': message}, 400  # Bad Request
+
         conn = get_db()
         if conn is None:
             return {'message': 'Database connection failed'}, 500
@@ -113,8 +136,11 @@ class Empleado(Resource):
             return {'message': 'Empleado eliminado'}, 200
 
 # Endpoints para departamentos
-@departamento_ns.route('/')
+@departamento_ns.route('/', methods=['GET', 'POST', 'OPTIONS'])
 class DepartamentoList(Resource):
+    def options(self):
+        return {}, 200  # Responder a la solicitud preflight `OPTIONS`
+
     def get(self):
         """Obtener todos los departamentos"""
         conn = get_db()
@@ -127,6 +153,9 @@ class DepartamentoList(Resource):
     def post(self):
         """Crear un nuevo departamento"""
         nuevo_departamento = request.json
+        if 'nombre' not in nuevo_departamento or not nuevo_departamento['nombre']:
+            return {'message': "El campo 'nombre' es requerido."}, 400  # Bad Request
+
         conn = get_db()
         if conn is None:
             return {'message': 'Database connection failed'}, 500
@@ -138,8 +167,11 @@ class DepartamentoList(Resource):
             nuevo_departamento['id'] = cursor.lastrowid
             return nuevo_departamento, 201
 
-@departamento_ns.route('/<int:id>')
+@departamento_ns.route('/<int:id>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
 class Departamento(Resource):
+    def options(self):
+        return {}, 200  # Responder a la solicitud preflight `OPTIONS`
+
     def get(self, id):
         """Obtener un departamento por ID"""
         conn = get_db()
@@ -154,6 +186,9 @@ class Departamento(Resource):
     def put(self, id):
         """Actualizar un departamento existente"""
         actualizado_departamento = request.json
+        if 'nombre' not in actualizado_departamento or not actualizado_departamento['nombre']:
+            return {'message': "El campo 'nombre' es requerido."}, 400  # Bad Request
+
         conn = get_db()
         if conn is None:
             return {'message': 'Database connection failed'}, 500

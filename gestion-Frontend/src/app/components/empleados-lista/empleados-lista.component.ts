@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EmpleadosService, Empleado } from '../../services/empleados.service';
-import { DepartamentosService, Departamento } from '../../services/departamentos.service'; // Importar correctamente Departamento
+import { DepartamentosService, Departamento } from '../../services/departamentos.service'; 
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-empleados-lista',
@@ -13,16 +14,16 @@ import { DepartamentosService, Departamento } from '../../services/departamentos
 })
 export class EmpleadosListaComponent implements OnInit {
   empleados: Empleado[] = [];
-  departamentos: Departamento[] = []; // Almacena departamentos
+  departamentos: Departamento[] = []; 
 
   constructor(
     private empleadosService: EmpleadosService,
-    private departamentosService: DepartamentosService // Asegúrate de inyectar el servicio de departamentos
+    private departamentosService: DepartamentosService 
   ) {}
 
   ngOnInit(): void {
     this.cargarEmpleados();
-    this.cargarDepartamentos(); // Cargar departamentos al iniciar
+    this.cargarDepartamentos(); 
   }
 
   cargarEmpleados(): void {
@@ -32,20 +33,38 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   cargarDepartamentos(): void {
-    this.departamentosService.getDepartamentos().subscribe((data) => { // Cambia a usar DepartamentosService
-      this.departamentos = data; // Almacena la lista de departamentos
+    this.departamentosService.getDepartamentos().subscribe((data) => {
+      this.departamentos = data; 
     });
   }
 
   obtenerNombreDepartamento(departamentoId: number): string {
     const departamento = this.departamentos.find(dept => dept.id === departamentoId);
-    return departamento ? departamento.nombre : 'Desconocido'; // Devuelve el nombre o 'Desconocido' si no se encuentra
+    return departamento ? departamento.nombre : 'Desconocido'; 
   }
 
   eliminarEmpleado(id: number): void {
-    this.empleadosService.deleteEmpleado(id).subscribe(() => {
-      this.cargarEmpleados(); // Recargar la lista después de eliminar
-    });
+    if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+      this.empleadosService.deleteEmpleado(id).subscribe({
+        next: () => {
+          this.cargarEmpleados(); // Recargar la lista después de eliminar
+          // Mostrar un mensaje de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Eliminado',
+            text: 'Empleado eliminado con éxito.',
+          });
+        },
+        error: (error) => {
+          console.error('Error al eliminar el empleado:', error);
+          // Mostrar un mensaje de error en un diálogo de SweetAlert2
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al eliminar el empleado: ' + error.message,
+          });
+        }
+      });
+    }
   }
 }
-

@@ -52,3 +52,26 @@
     background-color: #218838; /* Color al pasar el ratón */
   }
   
+  .alert {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .alert-success {
+    border: 1px solid #d4edda;
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .alert-danger {
+    border: 1px solid #f8d7da;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .error-message {
+    color: #d9534f; /* Color de mensaje de error */
+    margin-top: 5px;
+    font-size: 0.9em;
+  }

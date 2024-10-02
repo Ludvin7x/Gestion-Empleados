@@ -55,9 +55,22 @@
     background-color: #0056b3; /* Color más oscuro al pasar el ratón */
   }
   
-  /* Estilo para mensajes de error (opcional) */
-  .error-message {
-    color: red; /* Color rojo para mensajes de error */
-    font-size: 14px; /* Tamaño de fuente más pequeño */
-    margin-top: 5px; /* Espacio superior */
-  }  
+/* Estilos para las alertas */
+.alert {
+  padding: 10px; /* Relleno interno */
+  margin-top: 15px; /* Espacio arriba de la alerta */
+  border-radius: 4px; /* Bordes redondeados */
+  font-weight: bold; /* Negrita para el texto */
+}
+
+.alert-success {
+  background-color: #d4edda; /* Fondo verde claro para éxito */
+  color: #155724; /* Texto verde oscuro */
+  border: 1px solid #c3e6cb; /* Borde verde */
+}
+
+.alert-danger {
+  background-color: #f8d7da; /* Fondo rojo claro para error */
+  color: #721c24; /* Texto rojo oscuro */
+  border: 1px solid #f5c6cb; /* Borde rojo */
+}

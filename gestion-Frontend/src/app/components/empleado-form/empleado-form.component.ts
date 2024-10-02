@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DepartamentosService, Departamento } from '../../services/departamentos.service';
-import { EmpleadosService, Empleado } from '../../services/empleados.service';
+import { EmpleadosService } from '../../services/empleados.service';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 @Component({
   selector: 'app-empleado-form',
@@ -14,19 +15,22 @@ import { EmpleadosService, Empleado } from '../../services/empleados.service';
 })
 export class EmpleadoFormComponent implements OnInit {
   empleadoForm: FormGroup;
-  departamentos: Departamento[] = [];
+  departamentos: Departamento[] = []; 
+  successMessage: string = ''; 
+  errorMessage: string = '';   
 
   constructor(
     private fb: FormBuilder,
     private departamentosService: DepartamentosService,
-    private empleadosService: EmpleadosService
+    private empleadosService: EmpleadosService,
+    private router: Router 
   ) {
     this.empleadoForm = this.fb.group({
       nombre: [''],
       apellido: [''],
       departamento_id: [''], 
-      cargo: [''],
-      fechaContratacion: ['']
+      nombre_cargo: [''],
+      fecha_contratacion: [''] 
     });
   }
 
@@ -45,15 +49,32 @@ export class EmpleadoFormComponent implements OnInit {
       this.empleadosService.addEmpleado(this.empleadoForm.value).subscribe(
         (response) => {
           console.log('Empleado agregado:', response);
-          // Manejo post-submission (redirigir a la lista o mostrar un mensaje de éxito)
+          // Mostrar alerta de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Empleado agregado con éxito!',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.navigate(['/empleados']); // Redirige a la lista de empleados al confirmar
+            }
+          });
+          this.errorMessage = ''; 
         },
         (error) => {
           console.error('Error al agregar empleado:', error);
-          // Manejar errores (por ejemplo, mostrar un mensaje de error)
+          // Mostrar alerta de error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al agregar empleado: ' + (error.error.message || 'Error desconocido, contacte a soporte!'),
+          });
+          this.successMessage = ''; 
         }
       );
     } else {
-      console.log('Formulario no válido');
+      this.errorMessage = 'Por favor, complete todos los campos requeridos.';
+      this.successMessage = ''; 
     }
-}
+  }
 }

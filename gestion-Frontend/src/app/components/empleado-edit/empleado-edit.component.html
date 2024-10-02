@@ -1,30 +1,36 @@
 <form [formGroup]="empleadoForm" (ngSubmit)="onSubmit()" class="empleado-form">
   <div class="form-group">
     <label for="nombre">Nombre:</label>
-    <input id="nombre" formControlName="nombre" type="text" class="form-control">
+    <input id="nombre" formControlName="nombre" type="text" class="form-control" required>
   </div>
 
   <div class="form-group">
     <label for="apellido">Apellido:</label>
-    <input id="apellido" formControlName="apellido" type="text" class="form-control">
+    <input id="apellido" formControlName="apellido" type="text" class="form-control" required>
   </div>
 
   <div class="form-group">
     <label for="departamento">Departamento:</label>
-    <select id="departamento" formControlName="departamento_id" class="form-control">
-      <option *ngFor="let dept of departamentos" [value]="dept.id">{{ dept.nombre }}</option> <!-- Cambia 'codigo' a 'id' -->
+    <select id="departamento" formControlName="departamento_id" class="form-control" required>
+      <option *ngFor="let dept of departamentos" [value]="dept.id">{{ dept.nombre }}</option>
     </select>
   </div>
 
   <div class="form-group">
-    <label for="cargo">Cargo:</label>
-    <input id="cargo" formControlName="cargo" type="text" class="form-control">
+    <label for="nombre_cargo">Cargo:</label>
+    <input id="nombre_cargo" formControlName="nombre_cargo" type="text" class="form-control" required>
   </div>
 
   <div class="form-group">
     <label for="fechaContratacion">Fecha de Contratación:</label>
-    <input id="fechaContratacion" formControlName="fechaContratacion" type="date" class="form-control">
+    <input id="fechaContratacion" formControlName="fecha_contratacion" type="date" class="form-control" required>
   </div>
 
   <button type="submit" class="btn-submit">Guardar</button>
+
+  <!-- Mensaje de éxito -->
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 </form>
