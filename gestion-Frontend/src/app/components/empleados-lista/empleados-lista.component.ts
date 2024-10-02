@@ -44,27 +44,38 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   eliminarEmpleado(id: number): void {
-    if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
-      this.empleadosService.deleteEmpleado(id).subscribe({
-        next: () => {
-          this.cargarEmpleados(); // Recargar la lista después de eliminar
-          // Mostrar un mensaje de éxito
-          Swal.fire({
-            icon: 'success',
-            title: 'Eliminado',
-            text: 'Empleado eliminado con éxito.',
-          });
-        },
-        error: (error) => {
-          console.error('Error al eliminar el empleado:', error);
-          // Mostrar un mensaje de error en un diálogo de SweetAlert2
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error al eliminar el empleado: ' + error.message,
-          });
-        }
-      });
-    }
+    // Mostrar una alerta de confirmación antes de eliminar
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás deshacer esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.empleadosService.deleteEmpleado(id).subscribe({
+          next: () => {
+            this.cargarEmpleados(); // Recargar la lista después de eliminar
+            // Mostrar un mensaje de éxito
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'Empleado eliminado con éxito.',
+            });
+          },
+          error: (error) => {
+            console.error('Error al eliminar el empleado:', error);
+            // Mostrar un mensaje de error en un diálogo de SweetAlert2
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Error al eliminar el empleado: ' + error.message,
+            });
+          }
+        });
+      }
+    });
   }
 }

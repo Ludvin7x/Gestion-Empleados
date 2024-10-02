@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 export interface Empleado {
   id: number;
@@ -38,11 +36,6 @@ export class EmpleadosService {
   }
   
   deleteEmpleado(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`).pipe(
-      catchError((error) => {
-        console.error('Error al eliminar el empleado:', error);
-        return of(); 
-      })
-    );
+    return this.http.delete<void>(`${this.apiUrl}${id}`)
   }
 }
