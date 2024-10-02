@@ -48,22 +48,19 @@ export class EmpleadoFormComponent implements OnInit {
     if (this.empleadoForm.valid) {
       this.empleadosService.addEmpleado(this.empleadoForm.value).subscribe(
         (response) => {
-          console.log('Empleado agregado:', response);
-          // Mostrar alerta de éxito
           Swal.fire({
             icon: 'success',
             title: 'Éxito',
             text: 'Empleado agregado con éxito!',
           }).then((result) => {
             if (result.isConfirmed) {
-              this.router.navigate(['/empleados']); // Redirige a la lista de empleados al confirmar
+              this.router.navigate(['/empleados']);
             }
           });
           this.errorMessage = ''; 
         },
         (error) => {
           console.error('Error al agregar empleado:', error);
-          // Mostrar alerta de error
           Swal.fire({
             icon: 'error',
             title: 'Error',

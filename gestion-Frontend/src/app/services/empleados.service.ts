@@ -15,7 +15,7 @@ export interface Empleado {
   providedIn: 'root'
 })
 export class EmpleadosService {
-  private apiUrl = 'http://localhost:5000/api/empleados/';
+  private apiUrl = 'http://127.0.0.1:5000/api/empleados/';
 
   constructor(private http: HttpClient) {}
 
@@ -36,6 +36,6 @@ export class EmpleadosService {
   }
   
   deleteEmpleado(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`)
+    return this.http.delete<void>(`${this.apiUrl}${id}`);
   }
 }

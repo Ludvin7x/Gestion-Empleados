@@ -44,7 +44,6 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   eliminarEmpleado(id: number): void {
-    // Mostrar una alerta de confirmación antes de eliminar
     Swal.fire({
       title: '¿Estás seguro?',
       text: "No podrás deshacer esta acción!",
@@ -57,8 +56,7 @@ export class EmpleadosListaComponent implements OnInit {
       if (result.isConfirmed) {
         this.empleadosService.deleteEmpleado(id).subscribe({
           next: () => {
-            this.cargarEmpleados(); // Recargar la lista después de eliminar
-            // Mostrar un mensaje de éxito
+            this.cargarEmpleados(); 
             Swal.fire({
               icon: 'success',
               title: 'Eliminado',
@@ -67,7 +65,6 @@ export class EmpleadosListaComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al eliminar el empleado:', error);
-            // Mostrar un mensaje de error en un diálogo de SweetAlert2
             Swal.fire({
               icon: 'error',
               title: 'Error',

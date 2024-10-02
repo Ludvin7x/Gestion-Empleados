@@ -6,7 +6,12 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 # Configurar CORS solo para el origen 'http://localhost:4200'
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}})
+CORS(app, resources={r"/api/*": {
+    "origins": "http://localhost:4200",
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+    "allow_headers": ["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
+    "supports_credentials": True
+}})
 
 api = Api(app, version='1.0', title='API Gestión Empleados', description='Una API para gestionar empleados y departamentos')
 
@@ -31,8 +36,7 @@ def get_db():
 # Crear tablas si no existen
 def init_db():
     with get_db() as conn:
-        conn.execute('''
-        CREATE TABLE IF NOT EXISTS empleados (
+        conn.execute('''CREATE TABLE IF NOT EXISTS empleados (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL,
             apellido TEXT NOT NULL,
@@ -41,8 +45,7 @@ def init_db():
             nombre_cargo TEXT NOT NULL
         )''')
 
-        conn.execute('''
-        CREATE TABLE IF NOT EXISTS departamentos (
+        conn.execute('''CREATE TABLE IF NOT EXISTS departamentos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL
         )''')
@@ -85,16 +88,15 @@ class EmpleadoList(Resource):
         if conn is None:
             return {'message': 'Database connection failed'}, 500
         with conn:
-            cursor = conn.execute('''
-                INSERT INTO empleados (nombre, apellido, departamento_id, fecha_contratacion, nombre_cargo)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (nuevo_empleado['nombre'], nuevo_empleado['apellido'], nuevo_empleado['departamento_id'], nuevo_empleado['fecha_contratacion'], nuevo_empleado['nombre_cargo']))
+            cursor = conn.execute('''INSERT INTO empleados (nombre, apellido, departamento_id, fecha_contratacion, nombre_cargo)
+                VALUES (?, ?, ?, ?, ?)''', 
+                (nuevo_empleado['nombre'], nuevo_empleado['apellido'], nuevo_empleado['departamento_id'], nuevo_empleado['fecha_contratacion'], nuevo_empleado['nombre_cargo']))
             nuevo_empleado['id'] = cursor.lastrowid
             return nuevo_empleado, 201
 
 @empleado_ns.route('/<int:id>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
 class Empleado(Resource):
-    def options(self):
+    def options(self, id):
         return {}, 200  # Responder a la solicitud preflight `OPTIONS`
 
     def get(self, id):
@@ -119,11 +121,10 @@ class Empleado(Resource):
         if conn is None:
             return {'message': 'Database connection failed'}, 500
         with conn:
-            conn.execute('''
-                UPDATE empleados
+            conn.execute('''UPDATE empleados
                 SET nombre = ?, apellido = ?, departamento_id = ?, fecha_contratacion = ?, nombre_cargo = ?
-                WHERE id = ?
-            ''', (actualizado_empleado['nombre'], actualizado_empleado['apellido'], actualizado_empleado['departamento_id'], actualizado_empleado['fecha_contratacion'], actualizado_empleado['nombre_cargo'], id))
+                WHERE id = ?''', 
+                (actualizado_empleado['nombre'], actualizado_empleado['apellido'], actualizado_empleado['departamento_id'], actualizado_empleado['fecha_contratacion'], actualizado_empleado['nombre_cargo'], id))
             return {'message': 'Empleado actualizado'}, 200
 
     def delete(self, id):
@@ -160,10 +161,8 @@ class DepartamentoList(Resource):
         if conn is None:
             return {'message': 'Database connection failed'}, 500
         with conn:
-            cursor = conn.execute('''
-                INSERT INTO departamentos (nombre)
-                VALUES (?)
-            ''', (nuevo_departamento['nombre'],))
+            cursor = conn.execute('''INSERT INTO departamentos (nombre)
+                VALUES (?)''', (nuevo_departamento['nombre'],))
             nuevo_departamento['id'] = cursor.lastrowid
             return nuevo_departamento, 201
 
@@ -193,11 +192,10 @@ class Departamento(Resource):
         if conn is None:
             return {'message': 'Database connection failed'}, 500
         with conn:
-            conn.execute('''
-                UPDATE departamentos
+            conn.execute('''UPDATE departamentos
                 SET nombre = ?
-                WHERE id = ?
-            ''', (actualizado_departamento['nombre'], id))
+                WHERE id = ?''', 
+                (actualizado_departamento['nombre'], id))
             return {'message': 'Departamento actualizado'}, 200
 
     def delete(self, id):
